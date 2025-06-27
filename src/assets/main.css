@@ -1,0 +1,16 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-inter: "Inter", sans-serif;
+  --font-open: "Open Sans", sans-serif;
+  --color-offwhite: rgb(253, 252, 251);
+  --color-grayish: rgb(51, 51, 51);
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+}

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex gap-8">
+  <div class="flex flex-col space-y-8 xl:space-y-0 xl:flex-row xl:gap-8">
     <div class="font-open text-grayish p-6 shadow-lg bg-white rounded-md">
       <div class="flex justify-between">
         <h1 class="text-4xl font-semibold">BudgetTracker</h1>
@@ -145,7 +145,9 @@
                 </div>
 
                 <div v-if="expenseDescIndex === index">
-                  <span class="text-zinc-500 italic">{{ expense.desc }}</span>
+                  <span class="text-zinc-500 italic px-2">{{
+                    expense.desc
+                  }}</span>
                 </div>
               </div>
             </div>
@@ -172,7 +174,9 @@
                   />
                 </div>
                 <div v-if="incomeDescIndex === index">
-                  <span class="text-zinc-500 italic">{{ income.desc }}</span>
+                  <span class="text-zinc-500 italic px-2">{{
+                    income.desc
+                  }}</span>
                 </div>
               </div>
             </div>
@@ -209,7 +213,7 @@
     </div>
     <div>
       <div class="flex justify-center">
-        <div class="w-xs xl:w-xl">
+        <div class="w-sm xl:w-xl shadow-md">
           <div class="bg-white p-4 rounded-md shadow-sm">
             <h2 class="text-2xl font-semibold mb-4">📊 Expense Chart</h2>
             <Pie

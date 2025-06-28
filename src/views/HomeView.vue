@@ -91,7 +91,7 @@
             id=""
             cols="30"
             rows="10"
-            class="bg-zinc-100 focus:outline-none p-1 text-lg rounded-md resize-none h-16 placeholder:text-base placeholder:text-zinc-500"
+            class="mt-5 xl:mt-0 bg-zinc-100 focus:outline-none p-1 text-lg rounded-md resize-none h-16 placeholder:text-base placeholder:text-zinc-500"
             v-model="inDescription"
           ></textarea>
           <div class="flex xl:justify-center items-center my-5">
@@ -176,18 +176,25 @@
       <div class="grid grid-cols-2 gap-8">
         <div class="mt-2 p-2 pt-2 bg-white rounded-md">
           <h1>
-            <span class="font-semibold">Full expenses: </span>
+            <span class="font-semibold">Total expense: </span>
             {{ fullexpenses }} €
           </h1>
         </div>
         <div class="mt-2 p-2 pt-2 bg-white rounded-md">
           <h1>
-            <span class="font-semibold">Full income:</span>
+            <span class="font-semibold">Total income:</span>
             {{ fullincomes }} €
           </h1>
         </div>
       </div>
     </div>
+    <div class="mt-8">
+      <h2 class="text-2xl font-semibold mb-4">📊 Expense Chart</h2>
+      <div class="bg-white p-4 rounded-md shadow-sm">
+        <Pie :data="chartData" :options="chartOptions" class="cursor-pointer" />
+      </div>
+    </div>
+
     <div>
       <h2 class="mt-5 text-xl">
         💰 Current budget:
@@ -206,6 +213,50 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 
+// pie chart
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Pie } from "vue-chartjs";
+
+ChartJS.register(ArcElement, Tooltip, Legend);
+
+const chartData = computed(() => {
+  const categorySum = {};
+
+  expenses.value.forEach((expense) => {
+    const category = expense.type;
+    categorySum[category] = (categorySum[category] || 0) + expense.amount;
+  });
+
+  const labels = Object.keys(categorySum);
+  const data = Object.values(categorySum);
+
+  return {
+    labels: labels,
+    datasets: [
+      {
+        data: data,
+        backgroundColor: [
+          "#fcba03",
+          "#fc8003",
+          "#fc4a03",
+          "#0fbd32",
+          "#19d496",
+          "#0dccde",
+          "#1fb8f0",
+          "#1f84f0",
+          "#0e47e3",
+          "#7852e3",
+        ],
+        borderWidth: 0,
+        borderColor: "transparent",
+      },
+    ],
+  };
+});
+
+//chartOptions
+
+// refs
 const income = ref("");
 const expense = ref("");
 const isModal = ref(false);
@@ -222,16 +273,15 @@ const inDescription = ref("");
 const incomeDescIndex = ref(null);
 const expenseDescIndex = ref(null);
 
-const expensesCount = computed(() => {
-  return expenses.value.length;
-});
-
+// total expense/income
 const fullexpenses = computed(() => {
   return expenses.value.reduce((acc, curr) => acc + curr.amount, 0);
 });
 const fullincomes = computed(() => {
   return incomes.value.reduce((acc, curr) => acc + curr.amount, 0);
 });
+
+// kategorije
 const kategorije = [
   "Namirnice",
   "Šišanje",
@@ -246,7 +296,6 @@ const kategorije = [
 ];
 
 // FUNKCIJE
-
 function selectKategorija(kategorija) {
   trenutnaKategorija.value = kategorija;
   isModal.value = false;
@@ -313,7 +362,6 @@ function reset() {
   saveData();
 }
 
-// treba promijenit, jer ako se otvori drugi zatvori se prvi, i ako je jedan otvoren i obriše se otvara se drugi
 function showExpenseDesc(index) {
   expenseDescIndex.value = expenseDescIndex.value === index ? null : index;
 }
@@ -321,13 +369,12 @@ function showIncomeDesc(index) {
   incomeDescIndex.value = incomeDescIndex.value === index ? null : index;
 }
 
-///
-// local store
 function saveData() {
   localStorage.setItem("expenses", JSON.stringify(expenses.value));
   localStorage.setItem("incomes", JSON.stringify(incomes.value));
 }
 
+// onMounted
 onMounted(() => {
   const savedExpenses = localStorage.getItem("expenses");
   const savedIncomes = localStorage.getItem("incomes");
@@ -339,13 +386,9 @@ onMounted(() => {
     incomes.value = JSON.parse(savedIncomes);
   }
 });
-
-// povezat na supabase
-// dodaj darkmode
 </script>
 
 <style scoped>
-/* clean input bez gore/dole */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;

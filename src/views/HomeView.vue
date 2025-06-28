@@ -188,7 +188,7 @@
         </div>
       </div>
     </div>
-    <div class="mt-8">
+    <div class="mt-8 w-xs xl:w-xl">
       <h2 class="text-2xl font-semibold mb-4">📊 Expense Chart</h2>
       <div class="bg-white p-4 rounded-md shadow-sm">
         <Pie :data="chartData" :options="chartOptions" class="cursor-pointer" />

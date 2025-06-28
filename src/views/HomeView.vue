@@ -242,7 +242,6 @@ const kategorije = [
   "Investicije",
   "Štednja",
   "Stan + režije",
-
   "Ostalo",
 ];
 
@@ -265,7 +264,7 @@ function addExpense() {
       type: trenutnaKategorija.value,
       desc: exDescription.value,
     });
-    /* currentBudget.value -= parseFloat(expense.value); */
+
     expense.value = "";
     exDescription.value = "";
     saveData();
@@ -283,7 +282,7 @@ function addIncome() {
       amount: parseFloat(income.value),
       desc: inDescription.value,
     });
-    /*  currentBudget.value += parseFloat(income.value); */
+
     income.value = "";
     inDescription.value = "";
     saveData();
@@ -309,7 +308,7 @@ function reset() {
   expenses.value.splice(0, expensesLength);
   const incomesLength = incomes.value.length;
   incomes.value.splice(0, incomesLength);
-  /* currentBudget.value = 0; */
+
   trenutnaKategorija.value = "Namirnice";
   saveData();
 }
@@ -332,7 +331,6 @@ function saveData() {
 onMounted(() => {
   const savedExpenses = localStorage.getItem("expenses");
   const savedIncomes = localStorage.getItem("incomes");
-  /*   const savedBudget = localStorage.getItem("currentBudget"); */
 
   if (savedExpenses) {
     expenses.value = JSON.parse(savedExpenses);
@@ -340,14 +338,14 @@ onMounted(() => {
   if (savedIncomes) {
     incomes.value = JSON.parse(savedIncomes);
   }
-  /* 
-  if (savedBudget) currentBudget.value = JSON.parse(savedBudget); */
 });
 
 // povezat na supabase
+// dodaj darkmode
 </script>
 
 <style scoped>
+/* clean input bez gore/dole */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;

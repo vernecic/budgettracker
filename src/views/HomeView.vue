@@ -145,9 +145,7 @@
                 </div>
 
                 <div v-if="expenseDescIndex === index">
-                  <span class="text-zinc-500 italic px-2">{{
-                    expense.desc
-                  }}</span>
+                  <span class="text-zinc-500 italic"> {{ expense.desc }}</span>
                 </div>
               </div>
             </div>

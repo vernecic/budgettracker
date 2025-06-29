@@ -2,7 +2,7 @@
   <div class="flex flex-col space-y-8 xl:space-y-0 xl:flex-row xl:gap-8">
     <div class="font-open text-grayish p-6 shadow-lg bg-white rounded-md">
       <div class="flex justify-between">
-        <h1 class="text-4xl font-semibold">BudgetTracker</h1>
+        <h1 class="text-3xl font-semibold">BudgetTracker</h1>
         <button
           class="bg-grayish text-white font-semibold py-1 px-2 rounded-md cursor-pointer shadow-md hover:shadow-lg hover:bg-zinc-800"
           @click="reset"
@@ -115,7 +115,7 @@
           class="flex flex-col space-y-4 xl:space-y-0 xl:grid xl:grid-cols-2 xl:gap-8"
         >
           <!-- expenses -->
-          <div class="p-2 rounded-md bg-zinc-100">
+          <div class="p-2 rounded-md bg-zinc-100 max-w-[306px]">
             <h2 class="text-2xl font-semibold">📉 Expenses</h2>
 
             <div
@@ -124,16 +124,15 @@
               class="flex justify-between mt-2 items-center cursor-pointer"
               @click="showExpenseDesc(index)"
             >
-              <div class="flex flex-col flex-1">
+              <div class="flex flex-col flex-1 overflow-hidden">
                 <div class="flex justify-between">
-                  <span class="text-lg"
-                    ><span class="text-red-500 font-semibold">-</span>
-                    {{ expense.amount }}€</span
-                  >
+                  <span class="text-lg">
+                    <span class="text-red-500 font-semibold">-</span>
+                    {{ expense.amount }}€
+                  </span>
                   <div>
                     <div class="flex gap-2">
                       <span class="font-medium">{{ expense.type }}</span>
-
                       <img
                         src="../images/trash.svg"
                         alt=""
@@ -145,12 +144,14 @@
                 </div>
 
                 <div v-if="expenseDescIndex === index">
-                  <span class="text-zinc-500 italic"> {{ expense.desc }}</span>
+                  <p class="text-zinc-500 italic break-words whitespace-normal">
+                    {{ expense.desc }}
+                  </p>
                 </div>
               </div>
             </div>
           </div>
-          <div class="p-2 rounded-md bg-zinc-100">
+          <div class="p-2 rounded-md bg-zinc-100 max-w-[306px]">
             <h2 class="text-2xl font-semibold">📈 Incomes</h2>
             <div
               v-for="(income, index) in incomes"
@@ -172,9 +173,9 @@
                   />
                 </div>
                 <div v-if="incomeDescIndex === index">
-                  <span class="text-zinc-500 italic px-2">{{
-                    income.desc
-                  }}</span>
+                  <p class="text-zinc-500 italic break-words whitespace-normal">
+                    {{ income.desc }}
+                  </p>
                 </div>
               </div>
             </div>
@@ -211,9 +212,9 @@
     </div>
     <div>
       <div class="flex justify-center">
-        <div class="w-sm xl:w-xl shadow-md">
-          <div class="bg-white p-4 rounded-md shadow-sm">
-            <h2 class="text-2xl font-semibold mb-4">📊 Expense Chart</h2>
+        <div class="w-sm xl:w-xl">
+          <div class="bg-white p-4 rounded-md shadow-lg">
+            <h2 class="text-3xl font-semibold mb-4">📊 Expense Chart</h2>
             <Pie
               :data="chartData"
               :options="chartOptions"
@@ -272,6 +273,25 @@ const chartData = computed(() => {
 });
 
 //chartOptions
+const chartOptions = ref({
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "bottom",
+    },
+    tooltip: {
+      callbacks: {
+        label: function (context) {
+          let label = context.dataset.label || "";
+          const value = context.raw;
+          const total = context.dataset.data.reduce((acc, cur) => acc + cur, 0);
+          const percentage = ((value / total) * 100).toFixed(1);
+          return `${label}: €${value} - ${percentage}%`;
+        },
+      },
+    },
+  },
+});
 
 // refs
 const income = ref("");

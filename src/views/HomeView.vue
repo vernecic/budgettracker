@@ -4,7 +4,7 @@
       <div class="flex justify-between">
         <h1 class="text-3xl font-semibold">BudgetTracker</h1>
         <button
-          class="bg-grayish text-white font-semibold py-1 px-2 rounded-md cursor-pointer shadow-md hover:shadow-lg hover:bg-zinc-800"
+          class="bg-grayish text-white transition duration-200 font-semibold py-1 px-2 rounded-md cursor-pointer shadow-md hover:shadow-lg hover:bg-zinc-800"
           @click="reset"
         >
           Reset
@@ -40,12 +40,12 @@
                 src="../images/arrowdown.svg"
                 alt=""
                 class="transition-transform duration-100"
-                :class="{ 'rotate-180': isModal }"
+                :class="{ 'rotate-180': isDropdown }"
               />
             </div>
             <div
               class="absolute z-50 bg-white flex flex-col text-base border border-slate-300 p-1 rounded-md mt-2"
-              v-if="isModal"
+              v-if="isDropdown"
             >
               <span
                 v-for="(kategorija, index) in kategorije"
@@ -70,7 +70,7 @@
           </div>
           <div class="flex xl:justify-center items-center my-5">
             <button
-              class="bg-grayish text-base font-semibold text-white rounded-md p-2 cursor-pointer shadow-md hover:shadow-lg hover:bg-zinc-800"
+              class="bg-grayish text-base font-semibold transition duration-200 text-white rounded-md p-2 cursor-pointer shadow-md hover:shadow-lg hover:bg-zinc-800"
               @click="addExpense()"
             >
               Add expense
@@ -101,7 +101,7 @@
             ></textarea>
             <div class="flex xl:justify-center items-center my-5">
               <button
-                class="bg-white text-grayish border-grayish border font-semibold rounded-md p-2 cursor-pointer shadow-md hover:shadow-lg hover:bg-zinc-100"
+                class="bg-white text-grayish border-grayish border transition duration-200 font-semibold rounded-md p-2 cursor-pointer shadow-md hover:shadow-lg hover:bg-zinc-100"
                 @click="addIncome()"
               >
                 Add income
@@ -112,70 +112,93 @@
       </div>
       <div class="">
         <div
-          class="flex flex-col space-y-4 xl:space-y-0 xl:grid xl:grid-cols-2 xl:gap-8"
+          class="flex flex-col space-y-4 xl:space-y-0 xl:grid xl:grid-cols-2 xl:gap-8 xl:items-start"
         >
           <!-- expenses -->
           <div class="p-2 rounded-md bg-zinc-100 max-w-[306px]">
-            <h2 class="text-2xl font-semibold">📉 Expenses</h2>
-
-            <div
-              v-for="(expense, index) in expenses"
-              :key="index"
-              class="flex justify-between mt-2 items-center cursor-pointer"
-              @click="showExpenseDesc(index)"
-            >
-              <div class="flex flex-col flex-1 overflow-hidden">
-                <div class="flex justify-between">
-                  <span class="text-lg">
-                    <span class="text-red-500 font-semibold">-</span>
-                    {{ expense.amount }}€
-                  </span>
-                  <div>
-                    <div class="flex gap-2">
-                      <span class="font-medium">{{ expense.type }}</span>
-                      <img
-                        src="../images/trash.svg"
-                        alt=""
-                        @click="removeExpense(index)"
-                        class="cursor-pointer"
-                      />
+            <div class="flex justify-between">
+              <h2 class="text-2xl font-semibold">📉 Expenses</h2>
+              <img
+                src="../images/arrowdown.svg"
+                alt=""
+                @click="dropExpenses"
+                :class="{ 'rotate-180': isExpenses }"
+              />
+            </div>
+            <div v-if="isExpenses">
+              <div
+                v-for="(expense, index) in expenses"
+                :key="index"
+                class="flex justify-between mt-2 items-center cursor-pointer"
+                @click="showExpenseDesc(index)"
+              >
+                <div class="flex flex-col flex-1 overflow-hidden">
+                  <div class="flex justify-between">
+                    <span class="text-lg">
+                      <span class="text-red-500 font-semibold">-</span>
+                      {{ expense.amount }}€
+                    </span>
+                    <div>
+                      <div class="flex gap-2">
+                        <span class="font-medium">{{ expense.type }}</span>
+                        <img
+                          src="../images/trash.svg"
+                          alt=""
+                          @click="removeExpense(index)"
+                          class="cursor-pointer"
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div v-if="expenseDescIndex === index">
-                  <p class="text-zinc-500 italic break-words whitespace-normal">
-                    {{ expense.desc }}
-                  </p>
+                  <div v-if="expenseDescIndex === index">
+                    <p
+                      class="text-zinc-500 italic break-words whitespace-normal"
+                    >
+                      {{ expense.desc }}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
           <div class="p-2 rounded-md bg-zinc-100 max-w-[306px]">
-            <h2 class="text-2xl font-semibold">📈 Incomes</h2>
-            <div
-              v-for="(income, index) in incomes"
-              :key="index"
-              class="flex mt-2 items-center cursor-pointer"
-              @click="showIncomeDesc(index)"
-            >
-              <div class="flex flex-col flex-1">
-                <div class="flex justify-between">
-                  <span class="text-lg"
-                    ><span class="text-green-500 font-semibold">+</span>
-                    {{ income.amount }}€</span
-                  >
-                  <img
-                    src="../images/trash.svg"
-                    alt=""
-                    class="cursor-pointer"
-                    @click="removeIncome(index)"
-                  />
-                </div>
-                <div v-if="incomeDescIndex === index">
-                  <p class="text-zinc-500 italic break-words whitespace-normal">
-                    {{ income.desc }}
-                  </p>
+            <div class="flex justify-between">
+              <h2 class="text-2xl font-semibold">📈 Incomes</h2>
+              <img
+                src="../images/arrowdown.svg"
+                alt=""
+                :class="{ 'rotate-180': isIncomes }"
+                @click="dropIncomes"
+              />
+            </div>
+            <div v-if="isIncomes">
+              <div
+                v-for="(income, index) in incomes"
+                :key="index"
+                class="flex mt-2 items-center cursor-pointer"
+                @click="showIncomeDesc(index)"
+              >
+                <div class="flex flex-col flex-1">
+                  <div class="flex justify-between">
+                    <span class="text-lg"
+                      ><span class="text-green-500 font-semibold">+</span>
+                      {{ income.amount }}€</span
+                    >
+                    <img
+                      src="../images/trash.svg"
+                      alt=""
+                      class="cursor-pointer"
+                      @click="removeIncome(index)"
+                    />
+                  </div>
+                  <div v-if="incomeDescIndex === index">
+                    <p
+                      class="text-zinc-500 italic break-words whitespace-normal"
+                    >
+                      {{ income.desc }}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -296,7 +319,7 @@ const chartOptions = ref({
 // refs
 const income = ref("");
 const expense = ref("");
-const isModal = ref(false);
+const isDropdown = ref(false);
 const trenutnaKategorija = ref("Namirnice");
 const expenses = ref([]);
 const incomes = ref([]);
@@ -309,7 +332,8 @@ const exDescription = ref("");
 const inDescription = ref("");
 const incomeDescIndex = ref(null);
 const expenseDescIndex = ref(null);
-
+const isExpenses = ref(true);
+const isIncomes = ref(true);
 // total expense/income
 const fullexpenses = computed(() => {
   return expenses.value.reduce((acc, curr) => acc + curr.amount, 0);
@@ -335,11 +359,11 @@ const kategorije = [
 // FUNKCIJE
 function selectKategorija(kategorija) {
   trenutnaKategorija.value = kategorija;
-  isModal.value = false;
+  isDropdown.value = false;
 }
 
 function showModal() {
-  isModal.value = !isModal.value;
+  isDropdown.value = !isDropdown.value;
 }
 function addExpense() {
   isError.value = false;
@@ -409,6 +433,14 @@ function showIncomeDesc(index) {
 function saveData() {
   localStorage.setItem("expenses", JSON.stringify(expenses.value));
   localStorage.setItem("incomes", JSON.stringify(incomes.value));
+}
+
+function dropExpenses() {
+  isExpenses.value = !isExpenses.value;
+}
+
+function dropIncomes() {
+  isIncomes.value = !isIncomes.value;
 }
 
 // onMounted
